@@ -32,10 +32,18 @@ fn run(dir: &Path) -> Result<(), Box<dyn Error>> {
             let metadata = entry.metadata()?;
             let size = metadata.len();
             let modified: DateTime<Local> = DateTime::from(metadata.modified()?);
+            let filetype = if metadata.file_type().is_dir() {
+                "dir".to_string()
+            } else if metadata.file_type().is_file() {
+                "file".to_string()
+            } else {
+                "sym".to_string()
+            };
             println!(
-                "{:>5}\t{}\t{}",
+                "{:>5}\t{}\t{}\t{}",
                 size,
                 modified.format("%_d %b %H:%M").to_string(),
+                filetype,
                 filename
             );
         }
